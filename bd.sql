@@ -1,0 +1,60 @@
+DROP DATABASE ACLPHP;
+
+CREATE DATABASE IF NOT EXISTS ACLPHP;
+
+USE ACLPHP;
+
+CREATE TABLE USUARIOS(
+  id_user VARCHAR(20),
+  passwd VARCHAR(20),
+  nombre VARCHAR(20),
+  apellido VARCHAR(20),
+  area VARCHAR(20),
+  CONSTRAINT PK_USUARIOS PRIMARY KEY (id_user));
+
+CREATE TABLE ROLES(
+    id_rol VARCHAR(20),
+    nombre_rol VARCHAR(20),
+    CONSTRAINT PK_ROLES PRIMARY KEY (id_rol)
+  );
+
+CREATE TABLE USUARIOS_ROLES(
+  id_user VARCHAR(20),
+  id_rol VARCHAR(20),
+  CONSTRAINT PK_USUARIOS_ROLES PRIMARY KEY(
+    id_user,id_rol),
+  CONSTRAINT FK_USUARIOS_ROLES_USUARIOS FOREIGN KEY (id_user) REFERENCES USUARIOS(id_user),
+  CONSTRAINT FK_USUARIOS_ROLES_ROLES FOREIGN KEY (id_rol) REFERENCES ROLES(id_rol)
+);
+
+CREATE TABLE PERMISOS(
+  id_permiso VARCHAR(20) PRIMARY KEY,
+  desc_permiso VARCHAR(20)
+);
+
+CREATE TABLE ROLES_PERMISOS(
+  id_permiso VARCHAR(20),
+  id_rol VARCHAR(20),
+  CONSTRAINT PK_ROLES_PERMISOS PRIMARY KEY (id_permiso,id_rol)
+);
+
+USE ACLPHP;
+
+CREATE TABLE SITIOS(
+	id_sitio INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(20)
+);
+
+/* comandos añadidos a posteriori se deja a si por si hai que simplificar*/
+ALTER TABLE USUARIOS_ROLES RENAME TO USUARIOS_ROLES_SITIOS;
+ALTER TABLE USUARIOS_ROLES_SITIOS ADD id_sitio INT;
+ALTER TABLE USUARIOS_ROLES_SITIOS ADD CONSTRAINT FK_URS_SITIOS FOREIGN KEY(id_sitio) REFERENCES SITIOS(id_sitio);
+
+/* INSERCCIÓN DE DATOS*/
+INSERT INTO PERMISOS VALUES (1,'root'), (2,'stop'), (3,'read');
+INSERT INTO ROLES VALUES (1,'admin'),(2,'site_admin'),(3,'user');
+INSERT INTO SITIOS VALUES (1,'pag1'),(2,'pag2');
+INSERT INTO USUARIOS VALUES('admin',"Administrador", "abc123.","sistema","informatica");
+INSERT INTO USUARIOS VALUES('usuario',"abc123.","Usuario","logistica","almacen");
+INSERT INTO USUARIOS VALUES('usrpag1',"abc123.","Usuario","logistica","almacen");
+INSERT INTO USUARIOS VALUES('usrpag2',"abc123.","Usuario","logistica","almacen");
